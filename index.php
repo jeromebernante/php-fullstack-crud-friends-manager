@@ -4,7 +4,7 @@ include "./utils/database.php";
 // Get current path from URL
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 // localhost directory or domain name
-$domain = '/simple-structure';
+$domain = '/php-fullstack-crud-friends-manager';
 
 
 
