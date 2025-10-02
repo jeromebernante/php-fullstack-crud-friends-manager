@@ -2,9 +2,26 @@
 session_start();
 require_once "./models/Friend.php";
 
+// ✅ Require login (adjust based on your app's auth)
+// if (!isset($_SESSION['user_id'])) {
+//   http_response_code(403);
+//   exit("Forbidden: Please log in first.");
+// }
 
-// CONTROLLER (Handle form actions)
+// ✅ Generate CSRF token (if not set yet)
+if (empty($_SESSION['csrf_token'])) {
+  $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// ---------------- CONTROLLER (Handle form actions) ----------------
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+  // ✅ Validate CSRF token
+  if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+    http_response_code(403);
+    exit("Invalid CSRF token");
+  }
+
   if (isset($_POST["add_friend"])) {
     Friend::create($_POST);
     $_SESSION["toast"] = ["show" => true, "type" => "success", "message" => "Friend added!"];
@@ -84,11 +101,12 @@ render("./components/toast.php");
                   <form method="POST" class="d-inline"
                     onsubmit="return confirm('Are you sure you want to delete this friend?');">
                     <input type="hidden" name="id" value="<?= $friend['id'] ?>">
+                    <!-- ✅ CSRF token -->
+                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                     <button type="submit" name="delete_friend" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Delete Friend">
                       <i class="bi bi-trash"></i>
                     </button>
                   </form>
-
                 </td>
               </tr>
             <?php endforeach; ?>
@@ -109,7 +127,6 @@ render("./components/toast.php");
 
 <script>
   function setUpdateFriendForm(friend) {
-    // Fill inputs
     document.getElementById('edit-id').value = friend.id;
     document.getElementById('edit-name').value = friend.name;
     document.getElementById('edit-gender').value = friend.gender;

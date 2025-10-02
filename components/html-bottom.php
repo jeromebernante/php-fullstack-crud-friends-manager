@@ -6,4 +6,5 @@ if (!isset($component)) {
 ?>
 <!-- Bootstrap JS Bundle (includes Popper) -->
 <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
 </html>

@@ -46,6 +46,9 @@ if (!isset($component)) {
             <input type="email" class="form-control" id="edit-email" name="email">
           </div>
 
+          <!-- ✅ CSRF token -->
+          <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
